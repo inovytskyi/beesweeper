@@ -9,15 +9,10 @@ export default class mainGame extends Phaser.Scene {
 
     create() {
         const { width, height } = this.scale
-        this.add.tileSprite(0, 0, width, height, 'background')
-            .setOrigin(0)
-            .setTileScale(0.4)
-            .setTint(0xDFF5CE)
-
-        let board = new Board(this, 100, 30)
+        let board = new Board(this, 8, 10)
         let rect = board.getBounds()
         let currenth = rect.height
-        board.setScale(540 / currenth)
+        board.setScale(Math.min(width, height) / currenth)
 
         this.add.existing(board)
 

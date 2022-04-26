@@ -3,9 +3,9 @@ import Cell from "../gameobjects/cell"
 import mainGame from "../scenes/mainGame";
 
 export default class Board extends Phaser.GameObjects.Container {
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y)
-
+    constructor(scene: Phaser.Scene, n: number, bee_count: number) {
+        super(scene, 0, 0)
+        this.n = n
         for (let i = 0; i < this.n; i++)
             for (let j = 0; j < this.n; j++) {
                 let new_cell = new Cell(scene, i * this.cell_size, j * this.cell_size, this.cell_size, this)
@@ -13,7 +13,7 @@ export default class Board extends Phaser.GameObjects.Container {
                 this.add(new_cell)
             }
 
-        this.spapwn_bee(10)
+        this.spapwn_bee(bee_count)
 
     }
 

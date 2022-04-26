@@ -40,8 +40,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
             if (this.is_bee) {
 
                 this.setFrame('bee')
-                if (this.parent.in_progress)
-                {
+                if (this.parent.in_progress) {
                     this.parent.lost_game()
                     this.setFrame('gameover')
                 }
@@ -55,18 +54,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
 
             }
         }
-    }
-
-    flag() {
-        if (!this.is_revealed) {
-            this.is_flag = !this.is_flag
-            if (this.is_flag) {
-                this.setFrame('flag')
-            } else {
-                this.setFrame('closed')
-            }
-
-        } else {
+        else {
             if (!this.lastClick) {
                 this.lastClick = true
                 this.scene.time.delayedCall(300, () => this.lastClick = false)
@@ -78,14 +66,33 @@ export default class Cell extends Phaser.GameObjects.Sprite {
         }
     }
 
+    flag() {
+        if (!this.is_revealed) {
+            this.is_flag = !this.is_flag
+            if (this.is_flag) {
+                this.setFrame('flag')
+            } else {
+                this.setFrame('closed')
+            }
+
+        } 
+    }
+
     onClickHandler(event: Phaser.Input.Pointer) {
         if (this.parent.in_progress) {
-            if (event.rightButtonDown()) {
-                this.reveal()
-
-            }
             if (event.leftButtonDown()) {
-                this.flag()
+                if (!this.lastClick) {
+                    this.lastClick = true
+                    this.scene.time.delayedCall(300, () => {
+                        this.lastClick = false
+                        this.flag()
+                    })
+
+                } else {
+                    this.reveal()
+                }
+
+
             }
         }
 
