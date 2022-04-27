@@ -38,7 +38,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
         if ((!this.is_revealed && !this.is_flag) || (!this.is_revealed && !clicked)) {
             this.is_revealed = true
             this.is_flag = false
-            
+
             if (this.is_bee) {
 
                 this.setFrame('bee')
@@ -111,13 +111,11 @@ export default class Cell extends Phaser.GameObjects.Sprite {
             this.is_hold = true
             this.scene.time.delayedCall(400, () => {
                 if (this.is_hold) {
-                    if("vibrate" in window.navigator)
-                    {
+                    if (window.navigator.vibrate != undefined) {
                         window.navigator.vibrate(100)
                     }
-                    
                     this.onDoubleClickAction()
-                    
+
                 }
                 this.is_hold = false
             })
