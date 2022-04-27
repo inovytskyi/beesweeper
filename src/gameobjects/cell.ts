@@ -111,7 +111,11 @@ export default class Cell extends Phaser.GameObjects.Sprite {
             this.is_hold = true
             this.scene.time.delayedCall(400, () => {
                 if (this.is_hold) {
-                    window.navigator.vibrate(100)
+                    if("vibrate" in window.navigator)
+                    {
+                        window.navigator.vibrate(100)
+                    }
+                    
                     this.onDoubleClickAction()
                     
                 }
