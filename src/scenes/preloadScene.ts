@@ -15,7 +15,6 @@ preload() {
         bar.fillRect(250, 280, 300 * value, 30)
     })
      
-    this.load.image('background', "assets/background.jpg")
     this.load.image('restart', 'assets/restart.png')
 
     this.load.atlas('main', 'assets/texture.png', 'assets/texture_atlas.json')

@@ -7,9 +7,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
         this.setOrigin(0)
         this.setDisplaySize(size, size)
         this.setInteractive()
-        // this.on('pointerover', ()=>this.turnOn())
-        // this.on('pointerout',()=>this.turnOff())
-        this.on('pointerdown', (event: Phaser.Input.Pointer) => this.onClickHandler(event))
+        this.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUpHandler(pointer))
         this.parent = parent
 
     }
@@ -33,8 +31,8 @@ export default class Cell extends Phaser.GameObjects.Sprite {
         this.clearTint()
     }
 
-    reveal() {
-        if (!this.is_revealed) {
+    reveal(clicked: boolean) {
+        if ((!this.is_revealed && !this.is_flag)||(!this.is_revealed && !clicked)) {
             this.is_revealed = true
             this.is_flag = false
             if (this.is_bee) {
@@ -54,16 +52,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
 
             }
         }
-        else {
-            if (!this.lastClick) {
-                this.lastClick = true
-                this.scene.time.delayedCall(300, () => this.lastClick = false)
 
-            } else {
-                this.parent.open_neighbors(this.posX, this.posY)
-            }
-
-        }
     }
 
     flag() {
@@ -75,27 +64,42 @@ export default class Cell extends Phaser.GameObjects.Sprite {
                 this.setFrame('closed')
             }
 
-        } 
+        }
     }
 
-    onClickHandler(event: Phaser.Input.Pointer) {
-        if (this.parent.in_progress) {
-            if (event.leftButtonDown()) {
-                if (!this.lastClick) {
-                    this.lastClick = true
-                    this.scene.time.delayedCall(300, () => {
-                        this.lastClick = false
-                        this.flag()
-                    })
 
-                } else {
-                    this.reveal()
-                }
+    onClickAction() {
+        this.reveal(true)
+    }
 
+    onDoubleClickAction() {
+        if (this.is_revealed) {
+            this.parent.open_neighbors(this.posX, this.posY)
+        } else this.flag()
+    }
 
+    onUpHandler(pointer: Phaser.Input.Pointer) {
+        if (pointer.leftButtonReleased()) {
+            let holdTime: number = pointer.upTime - pointer.downTime
+            if (!this.lastClick) {
+                this.lastClick = true
+                this.scene.time.delayedCall(300, () => {
+                    if (this.lastClick) {
+                        if (holdTime > 300) {
+                            this.onDoubleClickAction()
+                        } else
+                            this.onClickAction()
+                    }
+                    this.lastClick = false
+                })
+
+            } else {
+                this.lastClick = false
+                this.onDoubleClickAction()
             }
-        }
 
+
+        }
 
     }
 

@@ -23,7 +23,7 @@ export default class mainGame extends Phaser.Scene {
     createRestart() {
         let button = this.add.image(this.scale.width / 2, this.scale.height / 2, 'restart')
             .setInteractive()
-        button.on('pointerdown', () => {
+        button.on('pointerup', () => {
             this.scene.restart()
         })
     }

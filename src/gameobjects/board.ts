@@ -72,7 +72,7 @@ export default class Board extends Phaser.GameObjects.Container {
             let cell = e as Cell
             if (!cell.is_bee)
             {
-                cell.reveal()
+                cell.reveal(false)
             }
         })
         
@@ -88,7 +88,7 @@ export default class Board extends Phaser.GameObjects.Container {
                 let cell = c as Cell
                 if (!cell.is_flag && !cell.is_revealed)
                 {
-                    cell.reveal()
+                    cell.reveal(false)
                 }
             })
         }
@@ -107,7 +107,7 @@ export default class Board extends Phaser.GameObjects.Container {
             return cell.is_bee
         }).forEach((e)=>{
             let cell = e as Cell
-            cell.reveal()
+            cell.reveal(false)
         })
         let currentScene = this.scene as mainGame
         currentScene.createRestart()
