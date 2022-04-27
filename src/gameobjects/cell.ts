@@ -8,6 +8,8 @@ export default class Cell extends Phaser.GameObjects.Sprite {
         this.setDisplaySize(size, size)
         this.setInteractive()
         this.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUpHandler(pointer))
+        this.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.onDownHandler(pointer))
+        this.on('pointerout', () => this.onOutHandler())
         this.parent = parent
 
     }
@@ -18,6 +20,7 @@ export default class Cell extends Phaser.GameObjects.Sprite {
     is_bee = false
     is_flag = false
     lastClick = false
+    is_hold = false
 
     setBoardPosition(x: number, y: number) {
         this.posX = x;
@@ -32,19 +35,20 @@ export default class Cell extends Phaser.GameObjects.Sprite {
     }
 
     reveal(clicked: boolean) {
-        if ((!this.is_revealed && !this.is_flag)||(!this.is_revealed && !clicked)) {
+        if ((!this.is_revealed && !this.is_flag) || (!this.is_revealed && !clicked)) {
             this.is_revealed = true
             this.is_flag = false
+            
             if (this.is_bee) {
 
                 this.setFrame('bee')
                 if (this.parent.in_progress) {
-                    this.parent.lost_game()
+                    this.parent.lost_game(this.posX, this.posY)
                     this.setFrame('gameover')
                 }
             }
             else {
-
+                this.parent.is_first_move = false
                 let n = this.parent.check_bees(this.posX, this.posY)
                 this.setFrame('cell' + n)
 
@@ -80,15 +84,12 @@ export default class Cell extends Phaser.GameObjects.Sprite {
 
     onUpHandler(pointer: Phaser.Input.Pointer) {
         if (pointer.leftButtonReleased()) {
-            let holdTime: number = pointer.upTime - pointer.downTime
+            this.is_hold = false
             if (!this.lastClick) {
                 this.lastClick = true
                 this.scene.time.delayedCall(300, () => {
                     if (this.lastClick) {
-                        if (holdTime > 300) {
-                            this.onDoubleClickAction()
-                        } else
-                            this.onClickAction()
+                        this.onClickAction()
                     }
                     this.lastClick = false
                 })
@@ -99,8 +100,30 @@ export default class Cell extends Phaser.GameObjects.Sprite {
             }
 
 
+        } else {
+            this.onDoubleClickAction()
         }
 
     }
+
+    onDownHandler(pointer: Phaser.Input.Pointer) {
+        if (pointer.leftButtonDown()) {
+            this.is_hold = true
+            this.scene.time.delayedCall(400, () => {
+                if (this.is_hold) {
+                    window.navigator.vibrate(100)
+                    this.onDoubleClickAction()
+                    
+                }
+                this.is_hold = false
+            })
+        }
+
+    }
+    onOutHandler() {
+        this.is_hold = false
+    }
+
+
 
 }

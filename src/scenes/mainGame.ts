@@ -5,8 +5,22 @@ import Board from "../gameobjects/board"
 export default class mainGame extends Phaser.Scene {
     constructor() {
         super('mainGame')
+
+
     }
 
+    init(data:any)
+    {
+        if ('x' in data)
+        {
+            this.startX = data.x
+            this.startY = data.y
+        }
+
+    }
+
+    startX: number = -1
+    startY: number = -1 
     create() {
         const { width, height } = this.scale
         let board = new Board(this, 8, 10)
@@ -15,6 +29,9 @@ export default class mainGame extends Phaser.Scene {
         board.setScale(Math.min(width, height) / currenth)
 
         this.add.existing(board)
+        if(this.startX != -1){
+            board.firstMove(this.startX, this.startY)
+        }
 
         this.input.mouse.disableContextMenu()
 

@@ -21,6 +21,7 @@ export default class Board extends Phaser.GameObjects.Container {
     cell_size: number = 10
 
     in_progress: boolean = true
+    is_first_move:boolean = false
 
     spapwn_bee(n: number) {
         let bee_count = 0
@@ -99,8 +100,13 @@ export default class Board extends Phaser.GameObjects.Container {
         return x*this.n + y
     }
 
-    lost_game()
-    {
+    lost_game(x: number, y: number)
+    {   
+        let currentScene = this.scene as mainGame
+        if (this.is_first_move)
+        {
+            this.scene.scene.restart({x, y})
+        }
         this.in_progress = false
         this.list.filter((e)=>{
             let cell = e as Cell
@@ -109,9 +115,15 @@ export default class Board extends Phaser.GameObjects.Container {
             let cell = e as Cell
             cell.reveal(false)
         })
-        let currentScene = this.scene as mainGame
+        
         currentScene.createRestart()
 
+    }
+
+    firstMove(x: number, y: number)
+    {
+        let cell = this.list[this.get_index(x, y)] as Cell
+        cell.reveal(true)
     }
 
 
